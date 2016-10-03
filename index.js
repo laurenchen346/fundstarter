@@ -1,22 +1,21 @@
-var express = require('express')
-var app = express()
+
+var http = require("http");
+var fs = require("fs");
 
 
-app.set('port', (process.env.PORT || 8080))
-//app.use(express.static(__dirname + '/public'))
+http.createServer(function(request,response) {
+    
+    fs.readFile('public/index.html',{root:__dirname}, function(err, file) {
+        if (err) {
+            response.writeHeader(404, {"Content-Type":"text/plain"});
+            response.write("404 Not Found\n");
+            response.end();
+        } else {
+            response.writeHeader(200);
+            response.write(file);
+            response.end();
+        }
+    });
+}).listen(8080);
 
-//__dirname returns the directory that the currently executing script is in.
-
-app.get('/', function(request, response) {
-    response.sendFile('public/index.html',{root:__dirname})
-
-/* sends an entire HTTP response to the client,                                                                                                                                     
- including headers and content,                                                                                                                                                     
- which is why you can only call once*/
-
-
-})
-
-app.listen(app.get('port'), function() {
-  console.log("Node app is running at :" + app.get('port'))
-})
+console.log("Server Running on 8080");
